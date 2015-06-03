@@ -1,7 +1,17 @@
 (function() {
   'use strict';
+  var title;
 
   function checkSong(service, options) {
+    // Pandora fades album covers, wait until the new cover is loaded
+    var opacity = $(options[service].cover).css('opacity');
+    if (opacity != 1) {
+      setTimeout(function() {
+        checkSong(service, options);
+      }, 1000);
+      return;
+    }
+
     var song = {
       artist: $(options[service].artist).text(),
       album: $(options[service].album).text(),

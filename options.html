@@ -1,0 +1,117 @@
+<html>
+  <head>
+    <title>Slack Music Notifier</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="scripts/jquery-1.11.3.min.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
+    <script src="scripts/options.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="span12">
+          <h3>Slack Music Notifier</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span12">
+          <h4>Slack</h4>
+          <div class="form-group">
+            <label for="slackUsername">Slack Username</label>
+            <input type="text" class="form-control" id="slackUsername" 
+                required placeholder="i.e. hal">
+          </div>
+          <div class="form-group">
+            <label for="slackWebHook">Slack Webhook Address</label>
+            <input type="text" class="form-control" id="slackWebHook" 
+                required placeholder="i.e. https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XxXxXxXxXxXxXxXxXxXxXxXx">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span12">
+          <h4>Google Music</h4>
+          <button id="googleEnabled" type="button" class="btn btn-primary active btn-success" data-toggle="button" 
+              aria-pressed="true" autocomplete="off">
+            Enabled
+          </button>
+          <a class="btn btn-default" data-toggle="collapse" href="#googleAdvanced" aria-expanded="false" 
+              aria-controls="googleAdvanced">
+            Advanced Options
+          </a>
+          <div class="collapse" id="googleAdvanced">
+            <div class="well">
+              <p>
+                The Slack Music Notifier uses jQuery selectors to detect the current song metadata. As Google Play Music evolves, the existing jQuery selectors may break. Entering the current selectors in the fields below should fix this extension until the developer can update.
+              </p>
+              <div class="form-group">
+                <label for="googleArtist">Artist</label>
+                <input type="text" class="form-control" id="googleArtist">
+              </div>
+              <div class="form-group">
+                <label for="googleAlbum">Album</label>
+                <input type="text" class="form-control" id="googleAlbum">
+              </div>
+              <div class="form-group">
+                <label for="googleTitle">Title</label>
+                <input type="text" class="form-control" id="googleTitle">
+              </div>
+              <div class="form-group">
+                <label for="googleCover">Cover Link - img Tag Only</label>
+                <input type="text" class="form-control" id="googleCover">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span12">
+          <h4>Pandora</h4>
+          <button id="pandoraEnabled" type="button" class="btn btn-primary active btn-success" data-toggle="button" 
+              aria-pressed="true" autocomplete="off">
+            Enabled
+          </button>
+          <a class="btn btn-default" data-toggle="collapse" href="#pandoraAdvanced" aria-expanded="false" 
+              aria-controls="pandoraAdvanced">
+            Advanced Options
+          </a>
+          <div class="collapse" id="pandoraAdvanced">
+            <div class="well">
+              <p>
+                The Slack Music Notifier uses jQuery selectors to detect the current song metadata. As Pandora evolves, the existing jQuery selectors may break. Entering the current selectors in the fields below should fix this extension until the developer can update.
+              </p>
+              <div class="form-group">
+                <label for="pandoraArtist">Artist</label>
+                <input type="text" class="form-control" id="pandoraArtist">
+              </div>
+              <div class="form-group">
+                <label for="pandoraAlbum">Album</label>
+                <input type="text" class="form-control" id="pandoraAlbum">
+              </div>
+              <div class="form-group">
+                <label for="pandoraTitle">Title</label>
+                <input type="text" class="form-control" id="pandoraTitle">
+              </div>
+              <div class="form-group">
+                <label for="pandoraCover">Cover Link - img Tag Only</label>
+                <input type="text" class="form-control" id="pandoraCover">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="span12">
+          <button id="save" type="submit" class="btn btn-primary">Save</button>
+          <div id="requiredError" style="display: none" class="alert alert-danger" role="alert">            
+            <strong>Required Fields Missing!</strong> Username and Webhook Address are required fields for this extension to work.
+          </div>
+          <div id="refreshAlert" style="display: none" class="alert alert-info" role="alert">
+            <strong>Warning!</strong> You must refresh your browser before these settings take effect.
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

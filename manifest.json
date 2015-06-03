@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+  "name": "Slack Music Notifier",
+  "description": "This extension posts a notification to your slack webhook when a song is played in Google Music or Pandora.",
+  "version": "1.0",
+  "content_scripts": [
+    {
+      "matches": [ "*://play.google.com/*" ],
+      "js": [ "scripts/jquery-1.11.3.min.js", "scripts/slack-music-notifier.js", "scripts/google-music.js" ]
+    }, {
+      "matches": [ "*://www.pandora.com/*" ],
+      "js": [ "scripts/jquery-1.11.3.min.js", "scripts/slack-music-notifier.js", "scripts/pandora.js" ]
+    }
+  ],
+  "options_page": "options.html",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ]
+}

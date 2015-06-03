@@ -10,8 +10,8 @@
     }
 
     chrome.storage.local.get( service + '-song', function(stored) {
-      if (!stored[service + '-song'] || 
-          (!isEmptySong(song) && !isSameSong(stored[service + '-song'], song))) {
+      if (!isEmptySong(song) && 
+          (!stored[service + '-song'] || !isSameSong(stored[service + '-song'], song))) {
         var toStore = {};
         toStore[service + '-song'] = song;
 

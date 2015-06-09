@@ -38,11 +38,27 @@
       }
     });
 
+    $('#attachmentEnabled').click(function() {
+      var button = $(this);
+      if (button.hasClass('active')) {
+        button.text('Use simple message (text)');
+        button.removeClass('btn-success');
+        button.addClass('btn-danger');
+      } else {
+        button.text('Use rich message (attachment)');
+        button.addClass('btn-success');
+        button.removeClass('btn-danger');
+      }
+    });
+
     chrome.storage.local.get('options', function(stored) {
       var options = stored.options;
       if (options) {
         $('#slackUsername').val(options.slack.username);
         $('#slackWebHook').val(options.slack.webhook);
+        if (!options.slack.attachment) {
+          $('#attachmentEnabled').click();
+        }
 
         jQuery.each(['google', 'pandora'], function(i, service) {
           if (!options[service].enabled) {
@@ -71,7 +87,8 @@
       var options = {
         slack: {
           username: username,
-          webhook: webhook
+          webhook: webhook,
+          attachment: $('#attachmentEnabled').hasClass('active'),
         },
         google: {
           enabled: $('#googleEnabled').hasClass('active'),

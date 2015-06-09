@@ -3,19 +3,19 @@
   var title;
 
   function checkSong(service, options) {
-    // Pandora fades album covers, wait until the new cover is loaded
-    var opacity = $(options[service].cover).css('opacity');
-    if (opacity != 1) {
+    // Delay posting song for 15 seconds to not report skipped songs
+    var currentPlayTime = $(options[service].playtime).text();
+    var playTimeSecs = hmsToSecondsOnly(currentPlayTime);
+    if (playTimeSecs < 15) {
       setTimeout(function() {
         checkSong(service, options);
       }, 1000);
       return;
     }
 
-    // Delay posting song for 15 seconds to not report skipped songs
-    var currentPlayTime = $(options[service].playtime).text();
-    var playTimeSecs = hmsToSecondsOnly(currentPlayTime);
-    if (playTimeSecs < 15) {
+    // Pandora fades album covers, wait until the new cover is loaded
+    var opacity = $(options[service].cover).css('opacity');
+    if (opacity != 1) {
       setTimeout(function() {
         checkSong(service, options);
       }, 1000);
@@ -51,28 +51,28 @@
   }
 
   function getJson(options, song) {
-      if (options.slack.attachment) {
-          return {
-            'username' : options.slack.username,
-            'icon_url' : song.cover,
-            "mrkdwn" : true,
-            "attachments": [
-              {
-                "fallback": song.title + ' - ' + song.artist + ' - ' + song.album,
-                "title": song.title,
-                "text": song.artist + ' - ' + song.album,
-                "thumb_url": song.cover
-              }
-            ]
+    if (options.slack.attachment) {
+      return {
+        'username' : options.slack.username,
+        'icon_url' : song.cover,
+        "mrkdwn" : true,
+        "attachments": [
+          {
+            "fallback": song.title + ' - ' + song.artist + ' - ' + song.album,
+            "title": song.title,
+            "text": song.artist + ' - ' + song.album,
+            "thumb_url": song.cover
           }
-      } else {
-          return {
-            'username' : options.slack.username,
-            'icon_url' : song.cover,
-            "mrkdwn" : true,
-            'text' : '*' + song.title + '*\n' + song.artist + ' - ' + song.album
-          }
+        ]
       }
+    } else {
+      return {
+        'username' : options.slack.username,
+        'icon_url' : song.cover,
+        "mrkdwn" : true,
+        'text' : '*' + song.title + '*\n' + song.artist + ' - ' + song.album
+      }
+    }
   }
 
   function isEmptySong(song) {

@@ -47,11 +47,15 @@
   }
 
   function isEmptySong(song) {
-    return !song.artist && !song.album && !song.title;
+    return isEmptyOrSpaces(song.artist) && isEmptyOrSpaces(song.album) && isEmptyOrSpaces(song.title);
   }
 
   function isSameSong(songA, songB) {
     return songA.artist == songB.artist && songA.album == songB.album && songA.title == songB.title;
+  }
+
+  function isEmptyOrSpaces(string) {
+    return string === null || string.match(/^ *$/) !== null;
   }
 
   window.SlackMusicNotifier = {

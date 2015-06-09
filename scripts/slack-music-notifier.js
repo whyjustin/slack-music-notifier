@@ -29,10 +29,16 @@
           jQuery.post(options.slack.webhook, JSON.stringify({
             'username' : options.slack.username,
             'icon_url' : song.cover,
-            'text' : '*' + song.title + '*\n' + song.artist + ' - ' + song.album,
-            "mrkdwn" : true
+            "mrkdwn" : true,
+            "attachments": [
+              {
+                "fallback": song.title + ' - ' + song.artist + ' - ' + song.album,
+                "title": song.title,
+                "text": song.artist + ' - ' + song.album,
+                "thumb_url": song.cover
+              }
+            ]
           }));
-
 
           setTimeout(function() {
             checkSong(service, options);

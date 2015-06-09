@@ -6,13 +6,15 @@
       Artist: '#player-artist',
       Album: '.player-album',
       Title: '#player-song-title',
-      Cover: '#playingAlbumArt'
+      Cover: '#playingAlbumArt',
+      Playtime: '#time_container_current'
     },
     pandora: {
       Artist: '.playerBarArtist',
       Album: '.playerBarAlbum',
       Title: '.playerBarSong',
-      Cover: '.playerBarArt'
+      Cover: '.playerBarArt',
+      Playtime: '.elapsedTime'
     }
   };
 
@@ -76,14 +78,16 @@
           artist: $('#googleArtist').val() ? $('#googleArtist').val() : defaults.google.Artist,
           album: $('#googleAlbum').val() ? $('#googleAlbum').val() : defaults.google.Album,
           title: $('#googleTitle').val() ? $('#googleTitle').val() : defaults.google.Title,
-          cover: $('#googleCover').val() ? $('#googleCover').val() : defaults.google.Cover
+          cover: $('#googleCover').val() ? $('#googleCover').val() : defaults.google.Cover,
+          playtime: $('#googlePlaytime').val() ? $('#googlePlaytime').val() : defaults.google.Playtime
         },
         pandora : {
           enabled: $('#pandoraEnabled').hasClass('active'),
           artist: $('#pandoraArtist').val() ? $('#pandoraArtist').val() : defaults.pandora.Artist,
           album: $('#pandoraAlbum').val() ? $('#pandoraAlbum').val() : defaults.pandora.Album,
           title: $('#pandoraTitle').val() ? $('#pandoraTitle').val() : defaults.pandora.Title,
-          cover: $('#pandoraCover').val() ? $('#pandoraCover').val() : defaults.pandora.Cover
+          cover: $('#pandoraCover').val() ? $('#pandoraCover').val() : defaults.pandora.Cover,
+          playtime: $('#pandoraPlaytime').val() ? $('#pandoraPlaytime').val() : defaults.pandora.Playtime
         }
       };
 

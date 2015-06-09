@@ -12,6 +12,16 @@
       return;
     }
 
+    // Delay posting song for 15 seconds to not report skipped songs
+    var currentPlayTime = $(options[service].playtime).text();
+    var playTimeSecs = hmsToSecondsOnly(currentPlayTime);
+    if (playTimeSecs < 15) {
+      setTimeout(function() {
+        checkSong(service, options);
+      }, 1000);
+      return;
+    }
+
     var song = {
       artist: $(options[service].artist).text(),
       album: $(options[service].album).text(),
@@ -56,6 +66,18 @@
 
   function isEmptyOrSpaces(string) {
     return string === null || string.match(/^ *$/) !== null;
+  }
+
+  function hmsToSecondsOnly(str) {
+    var p = str.split(':'),
+        s = 0, m = 1;
+
+    while (p.length > 0) {
+        s += m * parseInt(p.pop(), 10);
+        m *= 60;
+    }
+
+    return s;
   }
 
   window.SlackMusicNotifier = {

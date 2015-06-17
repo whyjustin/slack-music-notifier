@@ -1,4 +1,4 @@
-(function() {
+(function($) {
   'use strict';
 
   var defaults = {
@@ -15,17 +15,24 @@
       Title: '.playerBarSong',
       Cover: '.playerBarArt',
       Playtime: '.elapsedTime'
-    }
+    },
+	spotify: {
+	  Url: 'https://api.spotify.com/v1/tracks/',
+	  ElementSelector: '#track-add',
+	  RegExp: 'spotify:track:',
+	  Playtime: '#track-current',
+	  Title: '#track-name'
+	  }
   };
 
   $(document).ready(function() {
-    jQuery.each(['google', 'pandora'], function(i, service) {
-      jQuery.each(Object.getOwnPropertyNames(defaults.google), function(j, field) {
+    jQuery.each(['google', 'pandora', 'spotify'], function(i, service) {
+      jQuery.each(Object.getOwnPropertyNames(defaults[service]), function(j, field) {
         $('#' + service + field).prop('placeholder', defaults[service][field]);
       });
     });
 
-    $('#googleEnabled').add('#pandoraEnabled').click(function() {
+    $('#googleEnabled').add('#pandoraEnabled').add('#spotifyEnabled').click(function() {
       var button = $(this);
       if (button.hasClass('active')) {
         button.text('Disabled');
@@ -60,11 +67,11 @@
           $('#attachmentEnabled').click();
         }
 
-        jQuery.each(['google', 'pandora'], function(i, service) {
+        jQuery.each(['google', 'pandora', 'spotify'], function(i, service) {
           if (!options[service].enabled) {
             $('#' + service + 'Enabled').click();
           }
-          jQuery.each(Object.getOwnPropertyNames(defaults.google), function(j, field) {
+          jQuery.each(Object.getOwnPropertyNames(defaults[service]), function(j, field) {
             if (options[service][field.toLowerCase()] && 
                 options[service][field.toLowerCase()] != defaults[service][field]) {
               $('#' + service + field).val(options[service][field.toLowerCase()]);
@@ -105,6 +112,14 @@
           title: $('#pandoraTitle').val() ? $('#pandoraTitle').val() : defaults.pandora.Title,
           cover: $('#pandoraCover').val() ? $('#pandoraCover').val() : defaults.pandora.Cover,
           playtime: $('#pandoraPlaytime').val() ? $('#pandoraPlaytime').val() : defaults.pandora.Playtime
+        },
+        spotify : {
+          enabled: $('#spotifyEnabled').hasClass('active'),
+          url: $('#spotifyUrl').val() ? $('#spotifyUrl').val() : defaults.spotify.Url,
+          elementSelector: $('#spotifyElementSelector').val() ? $('#spotifyElementSelector').val() : defaults.spotify.ElementSelector,
+          regExp: $('#spotifyRegExp').val() ? $('#spotifyRegExp').val() : defaults.spotify.RegExp,
+          playtime: $('#spotifyPlaytime').val() ? $('#spotifyPlaytime').val() : defaults.spotify.Playtime,
+          title: $('#spotifyTitle').val() ? $('#spotifyTitle').val() : defaults.spotify.Title
         }
       };
 
@@ -113,4 +128,4 @@
       });
     });
   });
-}());
+}($));

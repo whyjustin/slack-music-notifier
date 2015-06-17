@@ -10,6 +10,10 @@
     }, {
       "matches": [ "*://www.pandora.com/*" ],
       "js": [ "scripts/jquery-1.11.3.min.js", "scripts/slack-music-notifier.js", "scripts/pandora.js" ]
+    }, {
+      "matches": [ "*://play.spotify.com/*" ],
+      "js": [ "scripts/jquery-1.11.3.min.js", "scripts/slack-music-notifier.js", "scripts/spotify.js" ],
+	    "all_frames": true
     }
   ],
   "options_page": "options.html",

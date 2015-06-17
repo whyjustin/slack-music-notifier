@@ -114,6 +114,46 @@
           </div>
         </div>
       </div>
+	  <div class="row">
+        <div class="span12">
+          <h4>Spotify</h4>
+          <button id="spotifyEnabled" type="button" class="btn btn-primary active btn-success" data-toggle="button" 
+              aria-pressed="true" autocomplete="off">
+            Enabled
+          </button>
+          <a class="btn btn-default" data-toggle="collapse" href="#spotifyAdvanced" aria-expanded="false" 
+              aria-controls="spotifyAdvanced">
+            Advanced Options
+          </a>
+          <div class="collapse" id="spotifyAdvanced">
+            <div class="well">
+              <p>
+                The Slack Music Notifier uses jQuery selectors to detect the current song metadata. As Spotify evolves, the existing jQuery selectors may break. Entering the current selectors in the fields below should fix this extension until the developer can update.
+              </p> 
+              <div class="form-group">
+                <label for="spotifyTitle">Title</label>
+                <input type="text" class="form-control" id="spotifyTitle">
+              </div>
+              <div class="form-group">
+                <label for="spotifyUrl">URL</label>
+                <input type="text" class="form-control" id="spotifyUrl">
+              </div>
+              <div class="form-group">
+                <label for="spotifyElementSelector">Element Selector</label>
+                <input type="text" class="form-control" id="spotifyElementSelector">
+              </div>
+              <div class="form-group">
+                <label for="spotifyRegExp">Replace</label>
+                <input type="text" class="form-control" id="spotifyRegExp">
+              </div>
+              <div class="form-group">
+                <label for="spotifyPlaytime">Time Elapsed</label>
+                <input type="text" class="form-control" id="spotifyPlaytime">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <br />
       <div class="row">
         <div class="span12">

@@ -1,4 +1,4 @@
-(function($) {
+(function($, storage) {
   'use strict';
 
   var defaults = {
@@ -16,18 +16,18 @@
       Cover: '.playerBarArt',
       Playtime: '.elapsedTime'
     },
-	spotify: {
-	  Url: 'https://api.spotify.com/v1/tracks/',
-	  ElementSelector: '#track-add',
-	  RegExp: 'spotify:track:',
-	  Playtime: '#track-current',
-	  Title: '#track-name'
+	  spotify: {
+	    Url: 'https://api.spotify.com/v1/tracks/',
+	    ElementSelector: '#track-add',
+	    RegExp: 'spotify:track:',
+	    Playtime: '#track-current',
+	    Title: '#track-name'
 	  }
   };
 
   $(document).ready(function() {
-    jQuery.each(['google', 'pandora', 'spotify'], function(i, service) {
-      jQuery.each(Object.getOwnPropertyNames(defaults[service]), function(j, field) {
+    $.each(['google', 'pandora', 'spotify'], function(i, service) {
+      $.each(Object.getOwnPropertyNames(defaults[service]), function(j, field) {
         $('#' + service + field).prop('placeholder', defaults[service][field]);
       });
     });
@@ -58,7 +58,7 @@
       }
     });
 
-    chrome.storage.local.get('options', function(stored) {
+    storage.get('options', function(stored) {
       var options = stored.options;
       if (options) {
         $('#slackUsername').val(options.slack.username);
@@ -67,11 +67,11 @@
           $('#attachmentEnabled').click();
         }
 
-        jQuery.each(['google', 'pandora', 'spotify'], function(i, service) {
+        $.each(['google', 'pandora', 'spotify'], function(i, service) {
           if (!options[service].enabled) {
             $('#' + service + 'Enabled').click();
           }
-          jQuery.each(Object.getOwnPropertyNames(defaults[service]), function(j, field) {
+          $.each(Object.getOwnPropertyNames(defaults[service]), function(j, field) {
             if (options[service][field.toLowerCase()] && 
                 options[service][field.toLowerCase()] != defaults[service][field]) {
               $('#' + service + field).val(options[service][field.toLowerCase()]);
@@ -123,9 +123,9 @@
         }
       };
 
-      chrome.storage.local.set({ 'options' : options }, function() {
+      storage.set({ 'options' : options }, function() {
         $('#refreshAlert').css('display', 'block');
       });
     });
   });
-}($));
+}($, chrome.storage.local));

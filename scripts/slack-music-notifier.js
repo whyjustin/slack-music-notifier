@@ -1,19 +1,20 @@
-(function($, storage) {
+(function(window, $, storage) {
   'use strict';
   var SPOTIFY = "spotify";
 
   function checkSong(service, options, prevSong) {
-    var title;  
+    var title;   
     prevSong = prevSong || {};
+    
     // Delay posting song for 15 seconds to not report skipped songs
     var currentPlayTime = $(options[service].playtime).text();
     var playTimeSecs = hmsToSecondsOnly(currentPlayTime);
-    if (playTimeSecs < 15) {
+    if (!playTimeSecs || playTimeSecs < 15) {
       setTimeout(function() {
         checkSong(service, options, prevSong);
       }, 1000);
       return;
-    }
+    }    
 
     // Pandora fades album covers, wait until the new cover is loaded
 	  if (options[service].cover) {
@@ -27,19 +28,19 @@
 	  }
 	
     // Check to see if this is the same as the previous song
-	  title = $(options[service].title).text();
-	  if (!title || prevSong.title == title) {
+    title = $(options[service].title).text();
+	  if (prevSong.title == title) {
 	    setTimeout(function() {
           checkSong(service, options, prevSong);
-      }, 1000);
-      return;
+		  }, 1000);
+		  return;
 	  }
 	
     // Spotify doesn't provide album information in their Now Playing
 	  if (service === SPOTIFY) {
 	    var element = $(options.spotify.elementSelector);
 	    var uri = options.spotify.url;
-	    var id = element.data('uri');
+	    var id = element[0].dataset.uri;
 	  
 	    if (!id) {
 	      setTimeout(function() {
@@ -83,17 +84,17 @@
         });
       } 
         
-	  setTimeout(function() {
-        checkSong(service, options, song);
-      }, 1000);      
-    });
+  	  setTimeout(function() {
+          checkSong(service, options, song);
+        }, 1000);      
+      });
   }
   
   function getAlbumArt(element) {
-	  if(element.prop('src')){
+	  if (element.prop('src')) {
 	    return element.prop('src');
 	  }
-	  else if(element.css('background-image')) {
+	  else if (element.css('background-image')) {
 	    var background = element.css('background-image');
 	    return background.replace('url(', '').replace(')', '');
 	  }
@@ -159,4 +160,4 @@
       });
     }
   };
-}($, chrome.storage.local));
+}(window, $, chrome.storage.local));

@@ -1,131 +1,131 @@
 (function($, storage) {
-	'use strict';
+  'use strict';
 
-	var defaults = {
-		google: {
-			Artist: '#player-artist',
-			Album: '.player-album',
-			Title: '#player-song-title',
-			Cover: '#playingAlbumArt',
-			Playtime: '#time_container_current'
-		},
-		pandora: {
-			Artist: '.playerBarArtist',
-			Album: '.playerBarAlbum',
-			Title: '.playerBarSong',
-			Cover: '.playerBarArt',
-			Playtime: '.elapsedTime'
-		},
-		spotify: {
-			Url: 'https://api.spotify.com/v1/tracks/',
-			ElementSelector: '#track-add',
-			RegExp: 'spotify:track:',
-			Playtime: '#track-current',
-			Title: '#track-name'
-		}
-	};
+  var defaults = {
+    google: {
+      Artist: '#player-artist',
+      Album: '.player-album',
+      Title: '#player-song-title',
+      Cover: '#playingAlbumArt',
+      Playtime: '#time_container_current'
+    },
+    pandora: {
+      Artist: '.playerBarArtist',
+      Album: '.playerBarAlbum',
+      Title: '.playerBarSong',
+      Cover: '.playerBarArt',
+      Playtime: '.elapsedTime'
+    },
+    spotify: {
+      Url: 'https://api.spotify.com/v1/tracks/',
+      ElementSelector: '#track-add',
+      RegExp: 'spotify:track:',
+      Playtime: '#track-current',
+      Title: '#track-name'
+    }
+  };
 
-	$(document).ready(function() {
-		$.each(['google', 'pandora', 'spotify'], function(i, service) {
-			$.each(Object.getOwnPropertyNames(defaults[service]), function(j, field) {
-				$('#' + service + field).prop('placeholder', defaults[service][field]);
-			});
-		});
+  $(document).ready(function() {
+    $.each(['google', 'pandora', 'spotify'], function(i, service) {
+      $.each(Object.getOwnPropertyNames(defaults[service]), function(j, field) {
+        $('#' + service + field).prop('placeholder', defaults[service][field]);
+      });
+    });
 
-		$('#googleEnabled').add('#pandoraEnabled').add('#spotifyEnabled').click(function() {
-			var button = $(this);
-			if (button.hasClass('active')) {
-				button.text('Disabled');
-				button.removeClass('btn-success');
-				button.addClass('btn-danger');
-			} else {
-				button.text('Enabled');
-				button.addClass('btn-success');
-				button.removeClass('btn-danger');
-			}
-		});
+    $('#googleEnabled').add('#pandoraEnabled').add('#spotifyEnabled').click(function() {
+      var button = $(this);
+      if (button.hasClass('active')) {
+        button.text('Disabled');
+        button.removeClass('btn-success');
+        button.addClass('btn-danger');
+      } else {
+        button.text('Enabled');
+        button.addClass('btn-success');
+        button.removeClass('btn-danger');
+      }
+    });
 
-		$('#attachmentEnabled').click(function() {
-			var button = $(this);
-			if (button.hasClass('active')) {
-				button.text('Use simple message (text)');
-				button.removeClass('btn-success');
-				button.addClass('btn-danger');
-			} else {
-				button.text('Use rich message (attachment)');
-				button.addClass('btn-success');
-				button.removeClass('btn-danger');
-			}
-		});
+    $('#attachmentEnabled').click(function() {
+      var button = $(this);
+      if (button.hasClass('active')) {
+        button.text('Use simple message (text)');
+        button.removeClass('btn-success');
+        button.addClass('btn-danger');
+      } else {
+        button.text('Use rich message (attachment)');
+        button.addClass('btn-success');
+        button.removeClass('btn-danger');
+      }
+    });
 
-		storage.get('options', function(stored) {
-			var options = stored.options;
-			if (options) {
-				$('#slackUsername').val(options.slack.username);
-				$('#slackWebHook').val(options.slack.webhook);
-				if (!options.slack.attachment) {
-					$('#attachmentEnabled').click();
-				}
+    storage.get('options', function(stored) {
+      var options = stored.options;
+      if (options) {
+        $('#slackUsername').val(options.slack.username);
+        $('#slackWebHook').val(options.slack.webhook);
+        if (!options.slack.attachment) {
+          $('#attachmentEnabled').click();
+        }
 
-				$.each(['google', 'pandora', 'spotify'], function(i, service) {
-					if (!options[service].enabled) {
-						$('#' + service + 'Enabled').click();
-					}
-					$.each(Object.getOwnPropertyNames(defaults[service]), function(j, field) {
-						if (options[service][field.toLowerCase()] && 
-								options[service][field.toLowerCase()] != defaults[service][field]) {
-							$('#' + service + field).val(options[service][field.toLowerCase()]);
-						}
-					});
-				});
-			}
-		});
+        $.each(['google', 'pandora', 'spotify'], function(i, service) {
+          if (!options[service].enabled) {
+            $('#' + service + 'Enabled').click();
+          }
+          $.each(Object.getOwnPropertyNames(defaults[service]), function(j, field) {
+            if (options[service][field.toLowerCase()] && 
+                options[service][field.toLowerCase()] != defaults[service][field]) {
+              $('#' + service + field).val(options[service][field.toLowerCase()]);
+            }
+          });
+        });
+      }
+    });
 
-		$('#save').click(function() {
-			var username = $('#slackUsername').val(),
-				webhook = $('#slackWebHook').val();
+    $('#save').click(function() {
+      var username = $('#slackUsername').val(),
+        webhook = $('#slackWebHook').val();
 
-			$('#requiredError').css('display', 'none');
-			if (!username || !webhook) {
-				$('#requiredError').css('display', 'block');
-				return;
-			}
+      $('#requiredError').css('display', 'none');
+      if (!username || !webhook) {
+        $('#requiredError').css('display', 'block');
+        return;
+      }
 
-			var options = {
-				slack: {
-					username: username,
-					webhook: webhook,
-					attachment: $('#attachmentEnabled').hasClass('active'),
-				},
-				google: {
-					enabled: $('#googleEnabled').hasClass('active'),
-					artist: $('#googleArtist').val() ? $('#googleArtist').val() : defaults.google.Artist,
-					album: $('#googleAlbum').val() ? $('#googleAlbum').val() : defaults.google.Album,
-					title: $('#googleTitle').val() ? $('#googleTitle').val() : defaults.google.Title,
-					cover: $('#googleCover').val() ? $('#googleCover').val() : defaults.google.Cover,
-					playtime: $('#googlePlaytime').val() ? $('#googlePlaytime').val() : defaults.google.Playtime
-				},
-				pandora : {
-					enabled: $('#pandoraEnabled').hasClass('active'),
-					artist: $('#pandoraArtist').val() ? $('#pandoraArtist').val() : defaults.pandora.Artist,
-					album: $('#pandoraAlbum').val() ? $('#pandoraAlbum').val() : defaults.pandora.Album,
-					title: $('#pandoraTitle').val() ? $('#pandoraTitle').val() : defaults.pandora.Title,
-					cover: $('#pandoraCover').val() ? $('#pandoraCover').val() : defaults.pandora.Cover,
-					playtime: $('#pandoraPlaytime').val() ? $('#pandoraPlaytime').val() : defaults.pandora.Playtime
-				},
-				spotify : {
-					enabled: $('#spotifyEnabled').hasClass('active'),
-					url: $('#spotifyUrl').val() ? $('#spotifyUrl').val() : defaults.spotify.Url,
-					elementSelector: $('#spotifyElementSelector').val() ? $('#spotifyElementSelector').val() : defaults.spotify.ElementSelector,
-					regExp: $('#spotifyRegExp').val() ? $('#spotifyRegExp').val() : defaults.spotify.RegExp,
-					playtime: $('#spotifyPlaytime').val() ? $('#spotifyPlaytime').val() : defaults.spotify.Playtime,
-					title: $('#spotifyTitle').val() ? $('#spotifyTitle').val() : defaults.spotify.Title
-				}
-			};
+      var options = {
+        slack: {
+          username: username,
+          webhook: webhook,
+          attachment: $('#attachmentEnabled').hasClass('active'),
+        },
+        google: {
+          enabled: $('#googleEnabled').hasClass('active'),
+          artist: $('#googleArtist').val() ? $('#googleArtist').val() : defaults.google.Artist,
+          album: $('#googleAlbum').val() ? $('#googleAlbum').val() : defaults.google.Album,
+          title: $('#googleTitle').val() ? $('#googleTitle').val() : defaults.google.Title,
+          cover: $('#googleCover').val() ? $('#googleCover').val() : defaults.google.Cover,
+          playtime: $('#googlePlaytime').val() ? $('#googlePlaytime').val() : defaults.google.Playtime
+        },
+        pandora : {
+          enabled: $('#pandoraEnabled').hasClass('active'),
+          artist: $('#pandoraArtist').val() ? $('#pandoraArtist').val() : defaults.pandora.Artist,
+          album: $('#pandoraAlbum').val() ? $('#pandoraAlbum').val() : defaults.pandora.Album,
+          title: $('#pandoraTitle').val() ? $('#pandoraTitle').val() : defaults.pandora.Title,
+          cover: $('#pandoraCover').val() ? $('#pandoraCover').val() : defaults.pandora.Cover,
+          playtime: $('#pandoraPlaytime').val() ? $('#pandoraPlaytime').val() : defaults.pandora.Playtime
+        },
+        spotify : {
+          enabled: $('#spotifyEnabled').hasClass('active'),
+          url: $('#spotifyUrl').val() ? $('#spotifyUrl').val() : defaults.spotify.Url,
+          elementSelector: $('#spotifyElementSelector').val() ? $('#spotifyElementSelector').val() : defaults.spotify.ElementSelector,
+          regExp: $('#spotifyRegExp').val() ? $('#spotifyRegExp').val() : defaults.spotify.RegExp,
+          playtime: $('#spotifyPlaytime').val() ? $('#spotifyPlaytime').val() : defaults.spotify.Playtime,
+          title: $('#spotifyTitle').val() ? $('#spotifyTitle').val() : defaults.spotify.Title
+        }
+      };
 
-			storage.set({ 'options' : options }, function() {
-				$('#refreshAlert').css('display', 'block');
-			});
-		});
-	});
+      storage.set({ 'options' : options }, function() {
+        $('#refreshAlert').css('display', 'block');
+      });
+    });
+  });
 }($, chrome.storage.local));

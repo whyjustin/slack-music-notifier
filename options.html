@@ -131,20 +131,16 @@
                 The Slack Music Notifier uses jQuery selectors to detect the current song metadata. As Spotify evolves, the existing jQuery selectors may break. Entering the current selectors in the fields below should fix this extension until the developer can update.
               </p> 
               <div class="form-group">
-                <label for="spotifyTitle">Title</label>
-                <input type="text" class="form-control" id="spotifyTitle">
+                <label for="spotifyApiUrl">API URL</label>
+                <input type="text" class="form-control" id="spotifyApiUrl">
               </div>
               <div class="form-group">
-                <label for="spotifyUrl">URL</label>
-                <input type="text" class="form-control" id="spotifyUrl">
+                <label for="spotifyDataUriElementSelector" title="element containing the data-uri corresponding to the current track">Data URI Element Selector</label>
+                <input type="text" class="form-control" id="spotifyDataUriElementSelector">
               </div>
               <div class="form-group">
-                <label for="spotifyElementSelector">Element Selector</label>
-                <input type="text" class="form-control" id="spotifyElementSelector">
-              </div>
-              <div class="form-group">
-                <label for="spotifyRegExp">Replace</label>
-                <input type="text" class="form-control" id="spotifyRegExp">
+                <label for="spotifyDataUriReplace" title="String to be stripped from the data-uri attribute">Data URI Replace</label>
+                <input type="text" class="form-control" id="spotifyDataUriReplace">
               </div>
               <div class="form-group">
                 <label for="spotifyPlaytime">Time Elapsed</label>

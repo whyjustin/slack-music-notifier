@@ -1,22 +1,22 @@
-(function($, storage) {
+(function(window, $, storage) {
   'use strict';
-  var SPOTIFY = "spotify";
+  var getSongInfo, getSongId;
 
   function checkSong(service, options, prevSong) {
-    var title;  
     prevSong = prevSong || {};
+    
     // Delay posting song for 15 seconds to not report skipped songs
     var currentPlayTime = $(options[service].playtime).text();
     var playTimeSecs = hmsToSecondsOnly(currentPlayTime);
-    if (playTimeSecs < 15) {
+    if (!playTimeSecs || playTimeSecs < 15) {
       setTimeout(function() {
         checkSong(service, options, prevSong);
       }, 1000);
       return;
-    }
+    }    
 
     // Pandora fades album covers, wait until the new cover is loaded
-	  if (options[service].cover) {
+    if (options[service].cover) {
       var opacity = $(options[service].cover).css('opacity');
       if (opacity != 1) {
         setTimeout(function() {
@@ -24,52 +24,44 @@
         }, 1000);
         return;
       }
-	  }
-	
+    }
+  
     // Check to see if this is the same as the previous song
-	  title = $(options[service].title).text();
-	  if (!title || prevSong.title == title) {
-	    setTimeout(function() {
-          checkSong(service, options, prevSong);
-      }, 1000);
-      return;
-	  }
-	
-    // Spotify doesn't provide album information in their Now Playing
-	  if (service === SPOTIFY) {
-	    var element = $(options.spotify.elementSelector);
-	    var uri = options.spotify.url;
-	    var id = element.data('uri');
-	  
-	    if (!id) {
-	      setTimeout(function() {
+    if (getSongId) {
+      if (getSongId(options) == prevSong.uid) {
+        setTimeout(function() {
           checkSong(service, options, prevSong);
         }, 1000);
         return;
-	    }
-	  
-	    uri += id.replace(options.spotify.regExp, '');
-	    $.get(uri, function(data) {
-	      var song = {
-		      artist: data.artists[0].name,
-		      album: data.album.name,
-		      title: title,
-		      cover: data.album.images[data.album.images.length-1].url,
-          url: data.external_urls.spotify
-		    }
-		
-		    storeSong(service, song, options);
-	    }); 
-	  } else {
-	    var song = {
-        artist: $(options[service].artist).text(),
-        album: $(options[service].album).text(),
-        title: title,
-        cover: getAlbumArt($(options[service].cover))
       }
-	  
-	    storeSong(service, song, options);
-	  }    
+    } else {
+      var songToCheck = defaultGetSong(service, options);
+      
+      if (isSameSong(songToCheck, prevSong)) {
+        setTimeout(function() {
+          checkSong(service, options, prevSong);
+        }, 1000);
+        return;
+      }
+    }
+  
+    // If a getSongInfo function was passed in we'll use that
+    if (getSongInfo) {
+      getSongInfo(options, function(song) {        
+        if (!song) {
+          setTimeout(function() {
+            checkSong(service, options, prevSong);
+          }, 1000);
+          return;
+        }
+      
+        storeSong(service, song, options);   
+      });   
+    } 
+    else {    
+      var song = defaultGetSong(service, options);
+      storeSong(service, song, options);
+    }    
   }
   
   function storeSong(service, song, options) {
@@ -83,23 +75,37 @@
         });
       } 
         
-	  setTimeout(function() {
-        checkSong(service, options, song);
-      }, 1000);      
-    });
+      setTimeout(function() {
+          checkSong(service, options, song);
+        }, 1000);      
+      });
+  }
+  
+  function defaultGetSong(service, options) {
+    var artist = $(options[service].artist).text();
+    var album = $(options[service].album).text();
+    var title = $(options[service].title).text();
+      
+    return {
+      artist: artist,
+      album: album,
+      title: title,
+      cover: getAlbumArt($(options[service].cover)),
+      uid: artist + album + title
+    }
   }
   
   function getAlbumArt(element) {
-	  if(element.prop('src')){
-	    return element.prop('src');
-	  }
-	  else if(element.css('background-image')) {
-	    var background = element.css('background-image');
-	    return background.replace('url(', '').replace(')', '');
-	  }
+    if (element.prop('src')) {
+      return element.prop('src');
+    }
+    else if (element.css('background-image')) {
+      var background = element.css('background-image');
+      return background.replace('url(', '').replace(')', '');
+    }
   }
 
-  function getJson(options, song) {	
+  function getJson(options, song) { 
     if (options.slack.attachment) {
       return {
         'username' : options.slack.username,
@@ -124,6 +130,10 @@
       }
     }
   }
+  
+  function isSameSong(song, prevSong, getTrackId) {
+    return song.uid == prevSong.uid ? true : false;
+  }
 
   function isEmptySong(song) {
     return isEmptyOrSpaces(song.artist) && isEmptyOrSpaces(song.album) && isEmptyOrSpaces(song.title);
@@ -146,10 +156,13 @@
   }
 
   window.SlackMusicNotifier = {
-    init: function(service) {
+    init: function(service, getId, getTrackFunc) {
+      getSongId = getId;
+      getSongInfo = getTrackFunc;
+      
       storage.get('options', function(stored) {
         if (!stored.options) {
-          console.error('Slack Music Notifier requires options to be set before use.')
+          console.error('Slack Music Notifier requires options to be set before use.');
         }
         if (!stored.options[service].enabled) {
           console.log('Slack Music Notifier is disabled for ' + service + '.');
@@ -159,4 +172,4 @@
       });
     }
   };
-}($, chrome.storage.local));
+}(window, $, chrome.storage.local));

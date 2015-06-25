@@ -155,7 +155,7 @@
     return s;
   }
 
-  window.SlackMusicNotifier = {
+  window.SlackScrobbler = {
     init: function(service, getId, getTrackFunc) {
       getSongId = getId;
       getSongInfo = getTrackFunc;

@@ -6,7 +6,7 @@
     return element[0].dataset.uri;
   }
 
-  window.SlackMusicNotifier.init('spotify', getId, function(options, callback) {
+  window.SlackScrobbler.init('spotify', getId, function(options, callback) {
     var uri = options.spotify.apiUrl;
     var id = getId(options);
     

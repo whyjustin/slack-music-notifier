@@ -1,5 +1,5 @@
 (function(window) {
   'use strict';
 
-  window.SlackMusicNotifier.init('pandora');
+  window.SlackScrobbler.init('pandora');
 }(window));

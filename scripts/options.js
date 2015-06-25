@@ -17,11 +17,10 @@
       Playtime: '.elapsedTime'
     },
     spotify: {
-      Url: 'https://api.spotify.com/v1/tracks/',
-      ElementSelector: '#track-add',
-      RegExp: 'spotify:track:',
-      Playtime: '#track-current',
-      Title: '#track-name'
+      ApiUrl: 'https://api.spotify.com/v1/tracks/',
+      DataUriElementSelector: '#track-add',
+      DataUriReplace: 'spotify:track:',
+      Playtime: '#track-current'
     }
   };
 
@@ -115,11 +114,10 @@
         },
         spotify : {
           enabled: $('#spotifyEnabled').hasClass('active'),
-          url: $('#spotifyUrl').val() ? $('#spotifyUrl').val() : defaults.spotify.Url,
-          elementSelector: $('#spotifyElementSelector').val() ? $('#spotifyElementSelector').val() : defaults.spotify.ElementSelector,
-          regExp: $('#spotifyRegExp').val() ? $('#spotifyRegExp').val() : defaults.spotify.RegExp,
-          playtime: $('#spotifyPlaytime').val() ? $('#spotifyPlaytime').val() : defaults.spotify.Playtime,
-          title: $('#spotifyTitle').val() ? $('#spotifyTitle').val() : defaults.spotify.Title
+          apiUrl: $('#spotifyApiUrl').val() ? $('#spotifyApiUrl').val() : defaults.spotify.ApiUrl,
+          dataUriElementSelector: $('#spotifyDataUriElementSelector').val() ? $('#spotifyDataUriElementSelector').val() : defaults.spotify.DataUriElementSelector,
+          dataUriReplace: $('#spotifyDataUriReplace').val() ? $('#spotifyDataUriReplace').val() : defaults.spotify.DataUriReplace,
+          playtime: $('#spotifyPlaytime').val() ? $('#spotifyPlaytime').val() : defaults.spotify.Playtime
         }
       };
 

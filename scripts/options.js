@@ -18,7 +18,7 @@
     },
     spotify: {
       ApiUrl: 'https://api.spotify.com/v1/tracks/',
-      DataUriElementSelector: '#track-add',
+      DataUriElementSelector: '.button-add',
       DataUriReplace: 'spotify:track:',
       Playtime: '#track-current'
     }

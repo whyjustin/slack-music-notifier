@@ -2,6 +2,14 @@
   'use strict';
   
   var spotifyScrobbler = new window.SlackScrobbler('spotify');
+  spotifyScrobbler.isCorrectFrame = function(service, options, callback) {
+    var element = $(options.spotify.dataUriElementSelector);
+    callback(element.length > 0);
+  };
+  // Bug with OSX implementations of spotify web app's playlist. Song beginning check disabled.
+  spotifyScrobbler.isSongBeginning = function(service, options, callback) {
+    callback(false);
+  };
   spotifyScrobbler.getSong = function(service, options, callback) {
     var element = $(options.spotify.dataUriElementSelector);
     if (element.length < 1) {
@@ -9,6 +17,10 @@
       return;
     }
     var id = element[0].dataset.uri;
+    if (!id) {
+      callback({});
+      return;
+    }
 
     var uri = options.spotify.apiUrl + id.replace(options.spotify.dataUriReplace, '');
     $.get(uri, function(data) {
@@ -25,7 +37,7 @@
     });
   };
   spotifyScrobbler.isSameSong = function(song, previousSong, callback) {
-    callback(song.uid == previousSong.uid);
+    callback(previousSong && previousSong.uid && (!song || song.uid == previousSong.uid));
   };
 
   spotifyScrobbler.run();

@@ -5,30 +5,36 @@
     var me = this;
 
     function checkSong(previousSong) {
-      me.isSongBeginning(me.service, me.options, function(beginning) {
-        if (!beginning) {
-          me.isSongReady(me.service, me.options, function(songReady) {
-            if (songReady) {
-              me.getSong(me.service, me.options, function(song) {
-                me.isEmptySong(song, function(emptySong) {
-                  if (!emptySong) {                    
-                    me.isSameSong(song, previousSong, function(sameSong) {
-                      if (!sameSong) {
-                        var toStore = {};
-                        toStore[service + '-song'] = song;
+      me.isCorrectFrame(me.service, me.options, function(correctFrame) {
+        if (correctFrame) {
+          me.isSongBeginning(me.service, me.options, function(beginning) {
+            if (!beginning) {
+              me.isSongReady(me.service, me.options, function(songReady) {
+                if (songReady) {
+                  me.getSong(me.service, me.options, function(song) {
+                    me.isEmptySong(song, function(emptySong) {
+                      if (!emptySong) {                    
+                        me.isSameSong(song, previousSong, function(sameSong) {
+                          if (!sameSong) {
+                            var toStore = {};
+                            toStore[service + '-song'] = song;
 
-                        storage.set(toStore, function() {
-                          $.post(me.options.slack.webhook, JSON.stringify(getJson(me.options, song)));
-                          resetTimeout(song);
+                            storage.set(toStore, function() {
+                              $.post(me.options.slack.webhook, JSON.stringify(getJson(me.options, song)));
+                              resetTimeout(song);
+                            });
+                          } else {
+                            resetTimeout(previousSong);
+                          }
                         });
                       } else {
                         resetTimeout(previousSong);
                       }
                     });
-                  } else {
-                    resetTimeout(previousSong);
-                  }
-                });
+                  });
+                } else {
+                  resetTimeout(previousSong);
+                }
               });
             } else {
               resetTimeout(previousSong);
@@ -66,23 +72,27 @@
     }
   }
 
+  SlackScrobbler.prototype.isCorrectFrame = function(service, options, callback) {
+    callback(true);
+  };
+
   SlackScrobbler.prototype.isSongBeginning = function(service, options, callback) {
     var currentPlayTime = $(options[service].playtime).text();
     var playTimeSecs = hmsToSecondsOnly(currentPlayTime);
     callback(!playTimeSecs || playTimeSecs < 15);
-  }
+  };
 
   SlackScrobbler.prototype.isSongReady = function(service, options, callback) {
     callback(true);
-  }
+  };
 
   SlackScrobbler.prototype.isEmptySong = function(song, callback) {
     callback(isEmptyOrSpaces(song.artist) && isEmptyOrSpaces(song.album) && isEmptyOrSpaces(song.title));
-  }
+  };
 
   SlackScrobbler.prototype.isSameSong = function(song, previousSong, callback) {
     callback(song.artist == previousSong.artist && song.album == previousSong.album && song.title == previousSong.title);
-  }
+  };
 
   SlackScrobbler.prototype.getSong = function(service, options, callback) {
     var artist = $(options[service].artist).text();
@@ -97,7 +107,7 @@
     }
 
     callback(song);
-  }
+  };
 
   function getAlbumArt(element) {
     if (element.prop('src')) {

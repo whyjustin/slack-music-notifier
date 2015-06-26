@@ -80,7 +80,7 @@
 
   SlackScrobbler.prototype.isSongBeginning = function(service, options, callback) {
     var element = $(options[service].playtime);
-    if (element) {
+    if (element && element.text()) {
       var currentPlayTime = element.text();
       var playTimeSecs = hmsToSecondsOnly(currentPlayTime);
       callback(!playTimeSecs || playTimeSecs < 15);

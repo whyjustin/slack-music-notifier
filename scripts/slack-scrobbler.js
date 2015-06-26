@@ -91,7 +91,7 @@
   };
 
   SlackScrobbler.prototype.isSameSong = function(song, previousSong, callback) {
-    callback(song.artist == previousSong.artist && song.album == previousSong.album && song.title == previousSong.title);
+    callback(!!previousSong && song.artist == previousSong.artist && song.album == previousSong.album && song.title == previousSong.title);
   };
 
   SlackScrobbler.prototype.getSong = function(service, options, callback) {

@@ -3,19 +3,21 @@
 
   window.SlackScrobbler = function(service) {
     var me = this;
+    var initialized = false;
 
     function checkSong(previousSong) {
       me.isCorrectFrame(me.service, me.options, function(correctFrame) {
         if (correctFrame) {
+          initialized = true;
           me.isSongBeginning(me.service, me.options, function(beginning) {
             if (!beginning) {
               me.isSongReady(me.service, me.options, function(songReady) {
                 if (songReady) {
-                  me.getSong(me.service, me.options, function(song) {
-                    me.isEmptySong(song, function(emptySong) {
-                      if (!emptySong) {                    
-                        me.isSameSong(song, previousSong, function(sameSong) {
-                          if (!sameSong) {
+                  me.isSameSong(me.service, me.options, previousSong, function(sameSong) {
+                    if (!sameSong) {
+                      me.getSong(me.service, me.options, function(song) {
+                        me.isEmptySong(song, function(emptySong) {
+                          if (!emptySong) {
                             var toStore = {};
                             toStore[service + '-song'] = song;
 
@@ -23,14 +25,12 @@
                               $.post(me.options.slack.webhook, JSON.stringify(getJson(me.options, song)));
                               resetTimeout(song);
                             });
-                          } else {
-                            resetTimeout(previousSong);
                           }
                         });
-                      } else {
-                        resetTimeout(previousSong);
-                      }
-                    });
+                      });
+                    } else {
+                      resetTimeout(previousSong);
+                    }
                   });
                 } else {
                   resetTimeout(previousSong);
@@ -41,7 +41,9 @@
             }
           });
         } else {
-          resetTimeout(previousSong);
+          if (!initialized) {
+            resetTimeout(previousSong);
+          }
         }
       });
     }
@@ -77,9 +79,14 @@
   };
 
   SlackScrobbler.prototype.isSongBeginning = function(service, options, callback) {
-    var currentPlayTime = $(options[service].playtime).text();
-    var playTimeSecs = hmsToSecondsOnly(currentPlayTime);
-    callback(!playTimeSecs || playTimeSecs < 15);
+    var element = $(options[service].playtime);
+    if (element) {
+      var currentPlayTime = element.text();
+      var playTimeSecs = hmsToSecondsOnly(currentPlayTime);
+      callback(!playTimeSecs || playTimeSecs < 15);
+    } else {
+      callback(false);
+    }
   };
 
   SlackScrobbler.prototype.isSongReady = function(service, options, callback) {
@@ -90,8 +97,15 @@
     callback(isEmptyOrSpaces(song.artist) && isEmptyOrSpaces(song.album) && isEmptyOrSpaces(song.title));
   };
 
-  SlackScrobbler.prototype.isSameSong = function(song, previousSong, callback) {
-    callback(!!previousSong && song.artist == previousSong.artist && song.album == previousSong.album && song.title == previousSong.title);
+  SlackScrobbler.prototype.getUid = function(service, options) {
+    var artist = $(options[service].artist).text();
+    var album = $(options[service].album).text();
+    var title = $(options[service].title).text();
+    return artist + album + title;
+  }
+
+  SlackScrobbler.prototype.isSameSong = function(service, options, previousSong, callback) {
+    callback(!!previousSong && this.getUid(service, options) == previousSong.uid);
   };
 
   SlackScrobbler.prototype.getSong = function(service, options, callback) {
@@ -105,6 +119,8 @@
       title: title,
       cover: getAlbumArt($(options[service].cover))
     }
+
+    song.uid = this.getUid(service, options);
 
     callback(song);
   };

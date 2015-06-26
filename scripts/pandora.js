@@ -10,5 +10,6 @@
       callback(true);
     }
   };
+
   pandoraScrobbler.run();
 }(window));

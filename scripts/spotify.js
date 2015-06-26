@@ -2,27 +2,41 @@
   'use strict';
   
   var spotifyScrobbler = new window.SlackScrobbler('spotify');
+
   spotifyScrobbler.isCorrectFrame = function(service, options, callback) {
-    var element = $(options.spotify.dataUriElementSelector);
-    callback(element.length > 0);
-  };
-  // Bug with OSX implementations of spotify web app's playlist. Song beginning check disabled.
-  spotifyScrobbler.isSongBeginning = function(service, options, callback) {
+    var selectors = options.spotify.dataUriElementSelectors.split(',');
+    for (var i = 0; i < selectors.length; i++) {
+      var element = $(selectors[i]);
+      if (element[0] && element[0].dataset.uri) {
+        callback(true);
+        break;
+      }
+    }
+
     callback(false);
   };
-  spotifyScrobbler.getSong = function(service, options, callback) {
-    var element = $(options.spotify.dataUriElementSelector);
-    if (element.length < 1) {
-      callback({});
-      return;
+
+  spotifyScrobbler.getUid = function(service, options) {
+    var selectors = options.spotify.dataUriElementSelectors.split(',');
+    for (var i = 0; i < selectors.length; i++) {
+      var element = $(selectors[i]);
+      if (element[0]) {
+        if (element[0].dataset.uri) {
+          return element[0].dataset.uri.replace(new RegExp(options.spotify.dataUriReplace, "i"), '');
+        }
+      }
     }
-    var id = element[0].dataset.uri;
+  }
+
+  spotifyScrobbler.getSong = function(service, options, callback) {
+    var id = this.getUid(service, options);
+
     if (!id) {
       callback({});
       return;
     }
 
-    var uri = options.spotify.apiUrl + id.replace(options.spotify.dataUriReplace, '');
+    var uri = options.spotify.apiUrl + id;
     $.get(uri, function(data) {
       var song = {
         artist: data.artists[0].name,
@@ -36,8 +50,9 @@
       callback(song);
     });
   };
-  spotifyScrobbler.isSameSong = function(song, previousSong, callback) {
-    callback(previousSong && previousSong.uid && (!song || song.uid == previousSong.uid));
+
+  spotifyScrobbler.isSameSong = function(service, options, previousSong, callback) {
+    callback(previousSong && this.getUid(service, options) == previousSong.uid);
   };
 
   spotifyScrobbler.run();

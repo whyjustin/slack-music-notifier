@@ -19,8 +19,8 @@
     },
     spotify: {
       ApiUrl: 'https://api.spotify.com/v1/tracks/',
-      DataUriElementSelector: '.button-add',
-      DataUriReplace: 'spotify:track:',
+      DataUriElementSelectors: '#track-add,.button-add',
+      DataUriReplace: "(.*):",
       Playtime: '#track-current'
     }
   };
@@ -117,7 +117,7 @@
         spotify : {
           enabled: $('#spotifyEnabled').hasClass('active'),
           apiUrl: $('#spotifyApiUrl').val() ? $('#spotifyApiUrl').val() : defaults.spotify.ApiUrl,
-          dataUriElementSelector: $('#spotifyDataUriElementSelector').val() ? $('#spotifyDataUriElementSelector').val() : defaults.spotify.DataUriElementSelector,
+          dataUriElementSelectors: $('#spotifyDataUriElementSelectors').val() ? $('#spotifyDataUriElementSelectors').val() : defaults.spotify.DataUriElementSelectors,
           dataUriReplace: $('#spotifyDataUriReplace').val() ? $('#spotifyDataUriReplace').val() : defaults.spotify.DataUriReplace,
           playtime: $('#spotifyPlaytime').val() ? $('#spotifyPlaytime').val() : defaults.spotify.Playtime
         }

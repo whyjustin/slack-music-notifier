@@ -1,4 +1,4 @@
-(function($, storage) {
+(function(document, $, storage) {
   'use strict';
 
   var defaults = {
@@ -126,4 +126,4 @@
       });
     });
   });
-}($, chrome.storage.local));
+}(document, $, chrome.storage.local));

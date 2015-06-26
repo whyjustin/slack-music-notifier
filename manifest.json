@@ -11,7 +11,7 @@
       "matches": [ "*://www.pandora.com/*" ],
       "js": [ "scripts/jquery-1.11.3.min.js", "scripts/slack-scrobbler.js", "scripts/pandora.js" ]
     }, {
-      "matches": [ "*://play.spotify.com/*" ],
+      "matches": [ "*://*.spotify.com/*" ],
       "js": [ "scripts/jquery-1.11.3.min.js", "scripts/slack-scrobbler.js", "scripts/spotify.js" ],
 	    "all_frames": true
     }

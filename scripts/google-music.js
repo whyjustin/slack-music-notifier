@@ -1,5 +1,6 @@
 (function(window) {
   'use strict';
 
-  window.SlackScrobbler.init('google');
+  var googleScrobbler = new window.SlackScrobbler('google');
+  googleScrobbler.run();
 }(window));

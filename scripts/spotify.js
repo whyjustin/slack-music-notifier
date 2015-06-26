@@ -1,20 +1,16 @@
 (function(window, $) {
   'use strict';
   
-  function getId(options) {
+  var spotifyScrobbler = new window.SlackScrobbler('spotify');
+  spotifyScrobbler.getSong = function(service, options, callback) {
     var element = $(options.spotify.dataUriElementSelector);
-    return element[0].dataset.uri;
-  }
-
-  window.SlackScrobbler.init('spotify', getId, function(options, callback) {
-    var uri = options.spotify.apiUrl;
-    var id = getId(options);
-    
-    if (!id) {
+    if (element.length < 1) {
+      callback({});
       return;
     }
-    
-    uri += id.replace(options.spotify.dataUriReplace, '');
+    var id = element[0].dataset.uri;
+
+    var uri = options.spotify.apiUrl + id.replace(options.spotify.dataUriReplace, '');
     $.get(uri, function(data) {
       var song = {
         artist: data.artists[0].name,
@@ -24,8 +20,13 @@
         url: data.external_urls.spotify,
         uid: id
       };
-        
+
       callback(song);
-    }); 
-  });
+    });
+  };
+  spotifyScrobbler.isSameSong = function(song, previousSong, callback) {
+    callback(song.uid == previousSong.uid);
+  };
+
+  spotifyScrobbler.run();
 }(window, $));

@@ -7,7 +7,8 @@
       Album: '.player-album',
       Title: '#player-song-title',
       Cover: '#playingAlbumArt',
-      Playtime: '#time_container_current'
+      Playtime: '#time_container_current',
+      DataIdElementSelector: '.song-row.currently-playing'
     },
     pandora: {
       Artist: '.playerBarArtist',
@@ -102,7 +103,8 @@
           album: $('#googleAlbum').val() ? $('#googleAlbum').val() : defaults.google.Album,
           title: $('#googleTitle').val() ? $('#googleTitle').val() : defaults.google.Title,
           cover: $('#googleCover').val() ? $('#googleCover').val() : defaults.google.Cover,
-          playtime: $('#googlePlaytime').val() ? $('#googlePlaytime').val() : defaults.google.Playtime
+          playtime: $('#googlePlaytime').val() ? $('#googlePlaytime').val() : defaults.google.Playtime,
+          dataIdElementSelector: $('#googleDataIdElementSelector').val() ? $('#googleDataIdElementSelector').val() : defaults.google.DataIdElementSelector
         },
         pandora : {
           enabled: $('#pandoraEnabled').hasClass('active'),

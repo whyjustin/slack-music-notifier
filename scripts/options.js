@@ -5,8 +5,8 @@
     google: {
       Artist: '#player-artist',
       Album: '.player-album',
-      Title: '#player-song-title',
-      Cover: '#playingAlbumArt',
+      Title: '#currently-playing-title',
+      Cover: '#playerBarArt',
       Playtime: '#time_container_current',
       DataIdElementSelector: '.song-row.currently-playing'
     },
